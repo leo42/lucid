@@ -1,5 +1,4 @@
 import { Core } from "../core/mod.ts";
-import { Constr } from "../plutus/mod.ts";
 
 type CostModel = Record<string, number>;
 
@@ -26,7 +25,7 @@ export type Slot = number;
 
 export interface Provider {
   getProtocolParameters(): Promise<ProtocolParameters>;
-  /** Query UTxOs by the payment credential of the address */
+  /** Query UTxOs by the payment credential of the address. */
   getUtxos(address: Address): Promise<UTxO[]>;
   /** Query UTxOs by the payment credential of the address filtered by a specific unit. */
   getUtxosWithUnit(address: Address, unit: Unit): Promise<UTxO[]>;
@@ -45,7 +44,7 @@ export type Credential = {
   hash: KeyHash | ScriptHash;
 };
 
-/** Concatenation of policy id and asset name in Hex */
+/** Concatenation of policy id and asset name in Hex. */
 export type Unit = string;
 export type Assets = Record<Unit | "lovelace", bigint>;
 export type ScriptType = "Native" | PlutusVersion;
@@ -198,27 +197,6 @@ export interface Wallet {
   ): Promise<SignedMessage>;
   submitTx(signedTx: Transaction): Promise<TxHash>;
 }
-
-/**
- * These are the arguments that conform a BuiltinData in Plutus:
- * data Data =
- *   Constr Integer [Data]
- * | Map [(Data, Data)]
- * | List [Data]
- * | I Integer
- * | B BS.ByteString
- *   deriving stock (Show, Eq, Ord, Generic)
- *   deriving anyclass (NFData)
- */
-export type PlutusData =
-  | bigint
-  | Bytes
-  | Array<PlutusData>
-  | Map<PlutusData, PlutusData>
-  | Constr<PlutusData>; // We emulate the constr like this
-
-/** Hex in case of string. */
-type Bytes = string | Uint8Array;
 
 /** JSON object */
 // deno-lint-ignore no-explicit-any
