@@ -158,6 +158,21 @@ export class Blockfrost implements Provider {
     );
   }
 
+  async getBalance(address: Address): Promise<Assets[]> {
+    const { paymentCredential } = getAddressDetails(address);
+    const credentialBech32 = paymentCredential?.type === "Key"
+      ? C.Ed25519KeyHash.from_hex(paymentCredential!.hash).to_bech32("addr_vkh")
+      : C.ScriptHash.from_hex(paymentCredential!.hash).to_bech32("addr_vkh"); // should be 'script' (CIP-0005)
+     const result =  await fetch(
+        `${this.url}/addresses/${credentialBech32}`,
+        { headers: { project_id: this.projectId } },
+      ).then((res) => res.json());
+      if (!result || result.error) {
+        return [];
+      }return   result.amount
+    
+  }
+  
   async getDelegation(rewardAddress: RewardAddress): Promise<Delegation> {
     const result = await fetch(
       `${this.url}/accounts/${rewardAddress}`,
