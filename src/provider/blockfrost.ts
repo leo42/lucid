@@ -173,6 +173,36 @@ export class Blockfrost implements Provider {
     
   }
   
+  async getTransactions(address: Address): Promise<TransactionsList>{
+    let result: TransactionsList = [];
+    let page = 1;
+    while (true) {
+      const pageResult: TransactionsList | BlockfrostUtxoError =
+        await fetch(
+          `${this.url}/addresses/${address}/transactions?page=${page}`,
+          { headers: { project_id: this.projectId, lucid } },
+        ).then((res) => res.json());
+      if ((pageResult as BlockfrostUtxoError).error) {
+        if ((pageResult as BlockfrostUtxoError).status_code === 404) {
+          return [];
+        } else {
+          throw new Error("Could not get Transactions from Blockfrost. Try again");
+        }
+      }
+      result = result.concat(pageResult as TransactionsList);
+      if ((pageResult as TransactionsList).length <= 0) break;
+      page++;
+    }
+    return result
+  };
+
+  async getTransactionDetails(TransactionHash: TxHash): Promise<TransactionDetails>{
+    let result: TransactionDetails = await fetch(
+          `${this.url}/txs/${TransactionHash}`,
+          { headers: { project_id: this.projectId, lucid } },
+        ).then((res) => res.json());     
+    return result
+  };
   async getDelegation(rewardAddress: RewardAddress): Promise<Delegation> {
     const result = await fetch(
       `${this.url}/accounts/${rewardAddress}`,
