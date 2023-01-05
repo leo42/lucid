@@ -11,6 +11,8 @@ import {
   Provider,
   RewardAddress,
   Transaction,
+  TransactionDetails,
+  TransactionsList,
   TxHash,
   Unit,
   UTxO,
