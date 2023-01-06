@@ -12,6 +12,7 @@ import {
   RewardAddress,
   Transaction,
   TransactionDetails,
+  TransactionUtxos,
   TransactionsList,
   TxHash,
   Unit,
@@ -203,6 +204,15 @@ export class Blockfrost implements Provider {
         ).then((res) => res.json());     
     return result
   };
+
+  async getTransactionUtxos(TransactionHash: TxHash): Promise<TransactionUtxos>{
+    let result: TransactionUtxos = await fetch(
+          `${this.url}/txs/${TransactionHash}/utxos`,
+          { headers: { project_id: this.projectId, lucid } },
+        ).then((res) => res.json());     
+    return result
+  };
+
   async getDelegation(rewardAddress: RewardAddress): Promise<Delegation> {
     const result = await fetch(
       `${this.url}/accounts/${rewardAddress}`,

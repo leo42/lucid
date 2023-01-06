@@ -35,6 +35,7 @@ export interface Provider {
   getUtxosByOutRef(outRefs: Array<OutRef>): Promise<UTxO[]>;
   getTransactions(address: Address): Promise<TransactionsList>;
   getTransactionDetails(txHash: TxHash): Promise<TransactionDetails>
+  getTransactionUtxos(TransactionHash: TxHash): Promise<TransactionUtxos>
   getDelegation(rewardAddress: RewardAddress): Promise<Delegation>;
   getDatum(datumHash: DatumHash): Promise<Datum>;
   awaitTx(txHash: TxHash): Promise<boolean>;
@@ -48,6 +49,7 @@ export type TransactionsList = Array<{
   block_height: number;
   block_time: number;
 }>;
+
 
 export type TransactionDetails ={
     hash: string,
@@ -83,6 +85,40 @@ export type TransactionDetails ={
     valid_contract: boolean
   };
 
+  export type TransactionUtxos =
+    {
+      hash: string,
+      inputs: [
+        {
+          address: string,
+          amount: Assets,
+          tx_hash: string,
+          output_index: number,
+          data_hash: string,
+          inline_datum: string,
+          reference_script_hash: string,
+          collateral: false,
+          reference: false
+        }
+      ],
+      outputs: [
+        {
+          address: string,
+          amount: [
+            {
+              unit: string,
+              quantity: number
+            }
+          ],
+          output_index: number,
+          data_hash: string,
+          inline_datum: string,
+          collateral: false,
+          reference_script_hash: string
+        }
+      ]
+    }
+  
 
 export type Credential = {
   type: "Key" | "Script";
