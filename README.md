@@ -35,14 +35,14 @@ npm install lucid-cardano
 For JavaScript and TypeScript
 
 ```js
-import { Lucid } from "https://deno.land/x/lucid@0.8.6/mod.ts";
+import { Lucid } from "https://deno.land/x/lucid@0.8.8/mod.ts";
 ```
 
 #### Web
 
 ```html
 <script type="module">
-import { Lucid } from "https://unpkg.com/lucid-cardano@0.8.6/web/mod.js"
+import { Lucid } from "https://unpkg.com/lucid-cardano@0.8.8/web/mod.js"
 // ...
 </script>
 ```
@@ -67,7 +67,7 @@ Outputs a `dist` folder
 ### Basic usage
 
 ```js
-// import { Blockfrost, Lucid } from "https://deno.land/x/lucid@0.8.6/mod.ts"; Deno
+// import { Blockfrost, Lucid } from "https://deno.land/x/lucid@0.8.8/mod.ts"; Deno
 import { Blockfrost, Lucid } from "lucid-cardano"; // NPM
 
 const lucid = await Lucid.new(
@@ -132,7 +132,7 @@ Link: https://github.com/Berry-Pool/cardano-multiplatform-lib/tree/vasil
 
 Branch: **vasil**
 
-Commit hash: **748792216a22bda078f4660478a0ed0e7bd26c94**
+Commit hash: **1ee7dfa7e4dda699eb58561d1c74c4765cbc07e5**
 
 #### message-signing
 
@@ -151,8 +151,10 @@ Join us on [Discord](https://discord.gg/82MWs63Tdm)!
 
 ### Use Lucid with React
 
-[use-cardano](https://use-cardano.alangaming.com/) a React context, hook and set of components built on top of Lucid
+[use-cardano](https://use-cardano.alangaming.com/) a React context, hook and set
+of components built on top of Lucid
 
 ### Use Lucid with Next.js
 
-[Cardano Starter Kit](https://cardano-starter-kit.alangaming.com/) a Next.js starter kit for building Cardano dApps
+[Cardano Starter Kit](https://cardano-starter-kit.alangaming.com/) a Next.js
+starter kit for building Cardano dApps
