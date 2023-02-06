@@ -12,6 +12,8 @@ import {
   Provider,
   RewardAddress,
   Transaction,
+  TransactionUtxos,
+  TransactionsList,
   TxHash,
   Unit,
   UTxO,
@@ -173,6 +175,54 @@ export class Blockfrost implements Provider {
       )
     );
   }
+
+  async getBalance(address: Address): Promise<Assets[]> {
+    const { paymentCredential } = getAddressDetails(address);
+    const credentialBech32 = paymentCredential?.type === "Key"
+      ? C.Ed25519KeyHash.from_hex(paymentCredential!.hash).to_bech32("addr_vkh")
+      : C.ScriptHash.from_hex(paymentCredential!.hash).to_bech32("addr_vkh"); // should be 'script' (CIP-0005)
+     const result =  await fetch(
+        `${this.url}/addresses/${credentialBech32}`,
+        { headers: { project_id: this.projectId } },
+      ).then((res) => res.json());
+      if (!result || result.error) {
+        return [];
+      }return   result.amount
+    
+  }
+  
+  async getTransactions(address: Address): Promise<TransactionsList>{
+    let result: TransactionsList = [];
+    let page = 1;
+    while (true) {
+      const pageResult: TransactionsList | BlockfrostUtxoError =
+        await fetch(
+          `${this.url}/addresses/${address}/transactions?page=${page}`,
+          { headers: { project_id: this.projectId, lucid } },
+        ).then((res) => res.json());
+      if ((pageResult as BlockfrostUtxoError).error) {
+        if ((pageResult as BlockfrostUtxoError).status_code === 404) {
+          return [];
+        } else {
+          throw new Error("Could not get Transactions from Blockfrost. Try again");
+        }
+      }
+      result = result.concat(pageResult as TransactionsList);
+      if ((pageResult as TransactionsList).length <= 0) break;
+      page++;
+    }
+    return result
+  };
+
+
+
+  async getTransactionUtxos(TransactionHash: TxHash): Promise<TransactionUtxos>{
+    let result: TransactionUtxos = await fetch(
+          `${this.url}/txs/${TransactionHash}/utxos`,
+          { headers: { project_id: this.projectId, lucid } },
+        ).then((res) => res.json());     
+    return result
+  };
 
   async getDelegation(rewardAddress: RewardAddress): Promise<Delegation> {
     const result = await fetch(

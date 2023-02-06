@@ -10,6 +10,7 @@ import {
   Provider,
   RewardAddress,
   Transaction,
+  TransactionsList,
   TxHash,
   Unit,
   UTxO,
@@ -146,6 +147,36 @@ export class Kupmios implements Provider {
       )
     );
   }
+
+
+ async getTransactions(address: Address): Promise<TransactionsList>{
+    const result : TransactionsList = [];
+    const queryResult = await fetch(
+      `${this.kupoUrl}/matches/${address}`,
+    )
+      .then((res) => res.json());
+
+      queryResult.map((tx) => {
+        if(!(result.some(obj => obj.tx_hash === tx.transaction_id))){
+        result.push(  {tx_hash: tx.transaction_id,
+          tx_index: 1,
+          block_height: tx.created_at.slot_no,
+          block_time: 1
+        })
+        if(tx.spent_at && !(result.some(obj => obj.tx_hash === tx.spent_at.header_hash))){
+          result.push(  {tx_hash: tx.spent_at.header_hash,
+            tx_index: 1,
+            block_height:  tx.spent_at.slot_no,
+            block_time: 1
+          })
+        }
+      }
+      });
+    return result
+  }
+
+  
+
 
   async getDelegation(rewardAddress: RewardAddress): Promise<Delegation> {
     const { stakeCredential } = getAddressDetails(rewardAddress);

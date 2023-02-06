@@ -36,11 +36,57 @@ export interface Provider {
   getUtxoByUnit(unit: Unit): Promise<UTxO>;
   /** Query UTxOs by the output reference (tx hash and index). */
   getUtxosByOutRef(outRefs: Array<OutRef>): Promise<UTxO[]>;
+  getTransactions(address: Address): Promise<TransactionsList>;
+  getTransactionUtxos(TransactionHash: TxHash): Promise<TransactionUtxos>;
   getDelegation(rewardAddress: RewardAddress): Promise<Delegation>;
   getDatum(datumHash: DatumHash): Promise<Datum>;
   awaitTx(txHash: TxHash, checkInterval?: number): Promise<boolean>;
   submitTx(tx: Transaction): Promise<TxHash>;
 }
+
+
+
+export type TransactionsList = Array<{
+  tx_hash: string;
+  tx_index: number;
+  block_height: number;
+  block_time: number;
+}>;
+
+  export type TransactionUtxos =
+    {
+      hash: string,
+      inputs: [
+        {
+          address: string,
+          amount: Assets,
+          tx_hash: string,
+          output_index: number,
+          data_hash: string,
+          inline_datum: string,
+          reference_script_hash: string,
+          collateral: false,
+          reference: false
+        }
+      ],
+      outputs: [
+        {
+          address: string,
+          amount: [
+            {
+              unit: string,
+              quantity: number
+            }
+          ],
+          output_index: number,
+          data_hash: string,
+          inline_datum: string,
+          collateral: false,
+          reference_script_hash: string
+        }
+      ]
+    }
+  
 
 export type Credential = {
   type: "Key" | "Script";
